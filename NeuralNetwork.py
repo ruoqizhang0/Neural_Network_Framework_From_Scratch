@@ -1,8 +1,11 @@
 import copy
 
 class NeuralNetwork:
-    def __init__(self, optimizer):
+    def __init__(self, optimizer, weights_initializer, bias_initializer):
         self.optimizer = optimizer
+        self.weights_initializer = weights_initializer
+        self.bias_initializer = bias_initializer
+
         self.loss = []
         self.layers = []
         self.loss_layer = None
@@ -18,11 +21,15 @@ class NeuralNetwork:
     def backward(self):
         dL_dy = self.loss_layer.backward(self.y)
         for layer in reversed(self.layers):
-            dL_dy= layer.backward(dL_dy)
+            dL_dy = layer.backward(dL_dy)
 
     def append_layer(self, layer):
         if layer.trainable:
-                layer.optimizer = copy.deepcopy(self.optimizer)
+            layer.optimizer = copy.deepcopy(self.optimizer)
+            layer.initialize(
+                self.weights_initializer,
+                self.bias_initializer
+            )
 
         self.layers.append(layer)
 
