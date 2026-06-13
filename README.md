@@ -113,12 +113,9 @@ which is propagated back to the previous layer.
 
 Similar to fully connected NNs, the gradient of the loss with respect to the convolution kernel can be derived using the chain rule:
 
-'''math
-\frac{\partial L}{\partial W}
-=
-X \star
-\frac{\partial L}{\partial Y}
-'''
+```math
+\frac{\partial L}{\partial W}=X \star \frac{\partial L}{\partial Y}
+```
 
 where $\star$ denotes the Cross-Correlation operation.
 
