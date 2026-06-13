@@ -117,7 +117,7 @@ $$
 \frac{\partial L}{\partial W}
 =
 X \star
-\frac{\partial L}{\partial Y},
+\frac{\partial L}{\partial Y}
 $$
 
 where $\star$ denotes the Cross-Correlation operation.
