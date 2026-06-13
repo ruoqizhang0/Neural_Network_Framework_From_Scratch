@@ -72,6 +72,8 @@ A modular deep learning framework implemented from scratch using Python and NumP
 
 ## Convolutional Layer
 
+🔗 **Source Code:** [Conv.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Conv.py)
+
 A convolution layer consists of a set of learnable filters (kernels). Each kernel slides over the input tensor, extracts local features, and produces a corresponding feature map.
 
 <p align="center">
@@ -113,12 +115,9 @@ which is propagated back to the previous layer.
 
 Similar to fully connected NNs, the gradient of the loss with respect to the convolution kernel can be derived using the chain rule:
 
-$$
-\frac{\partial L}{\partial W}
-=
-X \star
-\frac{\partial L}{\partial Y},
-$$
+```math
+\frac{\partial L}{\partial W}=X \star \frac{\partial L}{\partial Y}
+```
 
 where $\star$ denotes the Cross-Correlation operation.
 
@@ -136,50 +135,35 @@ If convolution is used during the forward pass, the kernel must first be rotated
 
 According to the chain rule,
 
-$$
-\frac{\partial L}{\partial B}
-=
-\frac{\partial L}{\partial Y}
-\frac{\partial Y}{\partial B}
-$$
+```math
+\frac{\partial L}{\partial B}=\frac{\partial L}{\partial Y}\frac{\partial Y}{\partial B}
+```
 
 The output of a convolution layer can be expressed as $Y = W \star X + B$. Therefore, $\frac{\partial Y}{\partial B} = 1$. Substituting this into the previous equation yields
 
-$$
-\frac{\partial L}{\partial B}
-=
-\frac{\partial L}{\partial Y}
-$$
+```math
+\frac{\partial L}{\partial B}=\frac{\partial L}{\partial Y}
+```
 
 Since the same bias value is added to every element of the corresponding feature map, the gradient of the bias is equal to the sum of all output gradients:
 
-$$
-\frac{\partial L}{\partial B}
-=
-\sum_{i,j}
-\frac{\partial L}{\partial Y_{ij}}.
-$$
+```math
+\frac{\partial L}{\partial B}=\sum_{i,j}\frac{\partial L}{\partial Y_{ij}}.
+```
 
 #### Gradient of the Loss with Respect to the Input Tensor
 
 Using the chain rule,
 
-$$
-\frac{\partial L}{\partial X}
-=
-\frac{\partial L}{\partial Y}
-\frac{\partial Y}{\partial X}.
-$$
+```math
+\frac{\partial L}{\partial X}=\frac{\partial L}{\partial Y}\frac{\partial Y}{\partial X}.
+```
 
 To propagate the gradient back to the input space, the output gradient is convolved with the kernel:
 
-$$
-\frac{\partial L}{\partial X}
-=
-\frac{\partial L}{\partial Y}
-*
-W,
-$$
+```math
+\frac{\partial L}{\partial X}=\frac{\partial L}{\partial Y}*W,
+```
 
 where $*$ denotes the convolution operation.
 
@@ -229,6 +213,8 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 ## 卷积层
 
+🔗 **Source Code:** [Conv.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Conv.py)
+
 卷积层由一组可学习的滤波器（卷积核，Kernel）组成。每个卷积核在输入张量上滑动，并提取局部特征，最终生成对应的特征图（Feature Map）。
 
 <p align="center">
@@ -265,13 +251,9 @@ $$
 #### 权重相对于损失函数的梯度
 
 与全连接神经网络类似，根据链式法则可得到：
-$$
-\frac{\partial L}{\partial W}
-=
-X \star
-\frac{\partial L}{\partial Y},
-$$
-
+```math
+\frac{\partial L}{\partial W}=X \star \frac{\partial L}{\partial Y}
+```
 其中，$\star$ 表示互相关（Cross-Correlation）运算。
 
 为了使计算得到的权重梯度与卷积核具有相同的尺寸，需要首先对输入张量 $X$ 进行填充（Padding）。对于大小为 $K \times K$ 的卷积核，通常在输入张量的每个边界处填充 $\lfloor K/2 \rfloor$ 个元素。经过填充后，使用互相关运算即可得到卷积核梯度$\frac{\partial L}{\partial W}$。
@@ -284,50 +266,35 @@ $$
 
 根据链式法则：
 
-$$
-\frac{\partial L}{\partial B}
-=
-\frac{\partial L}{\partial Y}
-\frac{\partial Y}{\partial B}
-$$
+```math
+\frac{\partial L}{\partial B}=\frac{\partial L}{\partial Y}\frac{\partial Y}{\partial B}
+```
 
 卷积层的输出可以表示为$Y = W\starX + B$，因此$\frac{\partial Y}{\partial B} = 1$，代入上式可得：
 
-$$
-\frac{\partial L}{\partial B}
-=
-\frac{\partial L}{\partial Y}
-$$
+```math
+\frac{\partial L}{\partial B}=\frac{\partial L}{\partial Y}
+```
 
 由于同一个 Bias 会被加到对应输出特征图中的每一个元素上，因此 Bias 的梯度等于该特征图中所有输出梯度的总和：
 
-$$
-\frac{\partial L}{\partial B}
-=
-\sum_{i,j}
-\frac{\partial L}{\partial Y_{ij}}。
-$$
+```math
+\frac{\partial L}{\partial B}=\sum_{i,j}\frac{\partial L}{\partial Y_{ij}}.
+```
 
 #### 输入张量相对于损失函数的梯度
 
 与全连接神经网络类似，根据链式法则：
 
-$$
-\frac{\partial L}{\partial X}
-=
-\frac{\partial L}{\partial Y}
-\frac{\partial Y}{\partial X}
-$$
+```math
+\frac{\partial L}{\partial X}=\frac{\partial L}{\partial Y}\frac{\partial Y}{\partial X}.
+```
 
 为了将梯度传播回输入空间，需要将输出梯度与卷积核进行卷积运算：
 
-$$
-\frac{\partial L}{\partial X}
-=
-\frac{\partial L}{\partial Y}
-*
-W
-$$
+```math
+\frac{\partial L}{\partial X}=\frac{\partial L}{\partial Y}*W,
+```
 
 其中 $*$ 表示卷积（Convolution）运算。
 
@@ -357,7 +324,7 @@ Optimization/
 ├── Optimizers.py
 
 NeuralNetwork.py
-```text
+```
 
 ## Technologies
 
