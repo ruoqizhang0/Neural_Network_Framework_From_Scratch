@@ -4,57 +4,77 @@ A modular deep learning framework implemented from scratch using Python and NumP
 
 ## Contents
 
-- [Features](#features)
-  - [Core Components](#core-components)
-  - [Layers](#layers)
+## Contents
+
+- [01 Neural Network Basics](#01-neural-network-basics)
   - [Activation Functions](#activation-functions)
   - [Optimization](#optimization)
   - [Loss Functions](#loss-functions)
-- [Convolutional Layer](#convolutional-layer)
-  - [Forward Pass](#forward-pass)
-  - [Backward Pass](#backward-pass)
-    - [Gradient of the Loss with Respect to the Weights](#gradient-of-the-loss-with-respect-to-the-weights-fracpartial-lpartial-w)
-    - [Gradient of the Loss with Respect to the Bias](#gradient-of-the-loss-with-respect-to-the-bias-fracpartial-lpartial-b)
-    - [Gradient of the Loss with Respect to the Input Tensor](#gradient-of-the-loss-with-respect-to-the-input-tensor-fracpartial-lpartial-x)
-    - [Implementation](#implementation)
-- [Project Structure](#project-structure)
-- [Technologies](#technologies)
+
+- [02 Regularization](#02-regularization)
+  - [Data Augmentation](#data-augmentation)
+  - [Loss Functions](#loss-functions-1)
+  - [Data Normalization](#data-normalization)
+    - [Batch Normalization](#batch-normalization)
+  - [Dropout](#dropout)
+
+- [03 Initialization](#03-initialization)
+  - [Bias Initialization](#bias-initialization)
+  - [Weight Initialization](#weight-initialization)
+  - [Constant Initialization](#constant-initialization)
+  - [Xavier (Glorot) Initialization](#xavier-glorot-initialization)
+  - [He Initialization](#he-initialization)
+
+- [04 Convolutional Neural Networks (CNN)](#04-convolutional-neural-networks-cnn)
+  - [Convolutional Layer](#convolutional-layer)
+    - [Forward Pass](#forward-pass)
+    - [Backward Pass](#backward-pass)
+      - [Gradient of the Loss with Respect to the Weights](#gradient-of-the-loss-with-respect-to-the-weights)
+      - [Gradient of the Loss with Respect to the Bias](#gradient-of-the-loss-with-respect-to-the-bias)
+      - [Gradient of the Loss with Respect to the Input Tensor](#gradient-of-the-loss-with-respect-to-the-input-tensor)
+      - [Implementation](#implementation)
+  - [Pooling Layer](#pooling-layer)
+    - [Forward Pass](#forward-pass-1)
+    - [Backward Pass](#backward-pass-1)
+
+- [05 Recurrent Neural Networks (RNN)](#05-recurrent-neural-networks-rnn)
+
+---
 
 ## 中文目录
 
-- [草履虫都能学会的神经网络搭建](#草履虫都能学会的神经网络搭建)
-- [特征](#特征)
-  - [目录](#目录)
-  - [层](#层)
+- [01 基础](#01-基础)
   - [激活函数](#激活函数)
   - [优化](#优化)
   - [损失函数](#损失函数)
-- [卷积层](#卷积层)
-  - [前向传播](#前向传播)
-  - [反向传播](#反向传播)
-    - [权重相对于损失函数的梯度](#权重相对于损失函数的梯度fracpartial-lpartial-w)
-    - [偏置相对于损失函数的梯度](#偏置相对于损失函数的梯度fracpartial-lpartial-b)
-    - [输入张量相对于损失函数的梯度](#输入张量相对于损失函数的梯度fracpartial-lpartial-x)
-    - [Python实现步骤](#python实现步骤)
-- [项目结构](#项目结构)
-- [技术栈](#技术栈)
 
+- [02 正则化](#02-正则化)
+  - [数据增强](#数据增强)
+  - [损失函数](#损失函数-1)
+  - [数据归一化](#数据归一化)
+    - [批量归一化](#批量归一化)
+  - [Dropout](#dropout-1)
 
-## Features
+- [03 初始化](#03-初始化)
+  - [偏置初始化](#偏置初始化)
+  - [权重初始化](#权重初始化)
+  - [常数初始化](#常数初始化-constant-initialization)
+  - [Xavier-Glorot-初始化](#xavier-glorot-初始化)
+  - [He 初始化](#he-初始化)
 
-### Core Components
+- [04 卷积神经网络（CNN）](#04-卷积神经网络cnn)
+  - [卷积层](#卷积层convolutional-layer)
+    - [前向传播](#前向传播)
+    - [反向传播](#反向传播)
+      - [权重相对于损失函数的梯度](#权重相对于损失函数的梯度)
+      - [偏置对于损失函数的梯度](#偏置对于损失函数的梯度)
+      - [输入张量相对于损失函数的梯度](#输入张量相对于损失函数的梯度)
+      - [Python实现步骤](#python实现步骤)
+  - [池化层](#池化层pooling-layer)
+    - [前向传播](#前向传播-1)
+    - [反向传播](#反向传播-1)
 
-* Modular neural network architecture
-* Forward and backward propagation
-* Parameter management
-* Training and inference pipelines
-
-### Layers
-
-* Fully Connected Layer
-* Convolution Layer
-* Pooling Layer
-* Flatten Layer
+## 01 Neural Network Basics
 
 ### Activation Functions
 
@@ -70,7 +90,92 @@ A modular deep learning framework implemented from scratch using Python and NumP
 
 * Cross Entropy Loss
 
-## Convolutional Layer
+## 02 Regularization
+
+### Data Augmentation
+
+* Random spatial transformations
+* Pixel transformations
+
+### Loss Functions
+
+### Data Normalization
+
+Common approaches include min-max normalization and variance normalization. Normalization can be performed as a preprocessing step on the input data or incorporated within the network.
+
+#### Batch Normalization
+
+Batch Normalization introduces a normalization layer with two learnable parameters, $\gamma$ (scale) and $\beta$ (shift). For each mini-batch, the mean and standard deviation of the activations are computed and used to normalize the inputs to have zero mean and unit variance. The normalized activations are then transformed using $\gamma$ and $\beta$ before being passed to the next layer.
+
+### Dropout
+
+## 03 Initialization
+
+🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Initializers.py)
+
+Since neural networks with non-linear activation functions typically lead to highly non-convex optimization problems, proper weight initialization plays a crucial role in successful training. Poor initialization can cause vanishing or exploding gradients, slow convergence, and unstable optimization.
+
+For fully connected layers:
+
+- **fan_in**: number of input units to the layer (input dimension of the weight matrix)
+- **fan_out**: number of output units from the layer (output dimension of the weight matrix)
+
+For convolutional layers:
+
+- **fan_in**: number of input channels × kernel height × kernel width
+- **fan_out**: number of output channels × kernel height × kernel width
+
+These quantities are commonly used by initialization methods such as Xavier (Glorot) and He initialization to preserve the variance of activations and gradients across layers, thereby improving training stability and convergence.
+
+### Bias Initialization
+
+Bias terms are typically initialized to zero, as they do not suffer from the symmetry-breaking issues associated with weights. An exception is when using ReLU activations, where a small positive constant may be used to reduce the risk of the *dying ReLU* problem.
+
+### Weight Initialization
+
+Weights should be initialized randomly to break symmetry between neurons. Initializing all weights to zero causes every neuron in a layer to receive identical gradients during backpropagation, preventing the network from learning diverse features.
+
+### Constant Initialization
+
+Constant initialization assigns all parameters the same value, with a default value of 0.1 in this framework. While this approach may be suitable for bias initialization, it is generally unsuitable for weights because it fails to break symmetry among neurons. Consequently, all neurons learn the same features and the representational power of the network is severely limited.
+
+### Xavier (Glorot) Initialization
+
+Xavier initialization is commonly used for layers with symmetric activation functions such as sigmoid or tanh. It scales the variance of the weights according to both the number of input and output units, helping to maintain a stable flow of activations and gradients throughout the network.
+
+Weights are sampled from a zero-mean Gaussian distribution:
+
+\[
+w \sim \mathcal{N}(0,\sigma)
+\]
+
+where
+
+\[
+\sigma = \sqrt{\frac{2}{\text{fan\_in} + \text{fan\_out}}}
+\]
+
+### He Initialization
+
+He initialization is a modification of Xavier initialization designed specifically for ReLU-based networks. Since ReLU activations discard negative values, He initialization compensates by scaling the variance using only the number of input connections.
+
+Weights are sampled from a zero-mean Gaussian distribution:
+
+\[
+w \sim \mathcal{N}(0,\sigma)
+\]
+
+where
+
+\[
+\sigma = \sqrt{\frac{2}{\text{fan\_in}}}
+\]
+
+By preserving the variance of activations across layers, He initialization helps mitigate vanishing gradients and often leads to faster and more stable training in deep ReLU networks.
+
+## 04 Convolutional Neural Networks (CNN)
+
+### Convolutional Layer
 
 🔗 **Source Code:** [Conv.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Conv.py)
 
@@ -80,7 +185,7 @@ A convolution layer consists of a set of learnable filters (kernels). Each kerne
   <img src="images/conv_a_cn.png" width="800">
 </p>
 
-### Forward pass
+#### Forward pass
 
 Bias is a scalar value that is added to every element of the output feature map generated by a convolution kernel. As shown in the figure below, if the bias corresponding to a kernel is 2, then 2 is added element-wise to every value in the resulting feature map.
 
@@ -90,7 +195,7 @@ Bias is a scalar value that is added to every element of the output feature map 
 
 Since each kernel has its own bias term, the number of biases is equal to the number of kernels (num_kernels).
 
-### Backward pass
+#### Backward pass
 
 During backpropagation, there are two main objectives.
 
@@ -111,7 +216,7 @@ $$
 
 which is propagated back to the previous layer.
 
-#### Gradient of the Loss with Respect to the Weights
+##### Gradient of the Loss with Respect to the Weights
 
 Similar to fully connected NNs, the gradient of the loss with respect to the convolution kernel can be derived using the chain rule:
 
@@ -131,7 +236,7 @@ Noting that most deep learning frameworks use cross-correlation rather than conv
 
 If convolution is used during the forward pass, the kernel must first be rotated by $180^\circ$ in the $x$-$y$ plane before computing the gradient.
 
-#### Gradient of the Loss with Respect to the Bias
+##### Gradient of the Loss with Respect to the Bias
 
 According to the chain rule,
 
@@ -151,7 +256,7 @@ Since the same bias value is added to every element of the corresponding feature
 \frac{\partial L}{\partial B}=\sum_{i,j}\frac{\partial L}{\partial Y_{ij}}.
 ```
 
-#### Gradient of the Loss with Respect to the Input Tensor
+##### Gradient of the Loss with Respect to the Input Tensor
 
 Using the chain rule,
 
@@ -167,7 +272,7 @@ To propagate the gradient back to the input space, the output gradient is convol
 
 where $*$ denotes the convolution operation.
 
-#### Implementation
+##### Implementation
 
 The first step is to expand the gradient tensor to match the spatial dimensions of the input tensor.
 
@@ -177,25 +282,19 @@ When $stride = 1,$ no additional processing is required. When $stride > 1,$ zero
 
 The implementation then proceeds as follows: Compute the bias gradient using the upsampled gradient tensor. Pad the input tensor and compute the weight gradient using cross-correlation. Convolve the upsampled gradient tensor with the kernel to obtain the input gradient. Update the weights and biases using the optimizer.
 
-# 草履虫都能学会的神经网络搭建
+### Pooling Layer
+
+#### Forward pass
+
+#### Backward pass
+
+## 05 Recurrent Neural Network(RNN)
+
+# 从零开始搭建神经网络
 
 这是一个完全使用 Python 和 NumPy 的模块化深度学习框架。
 
-## 特征
-
-### 目录
-
-* 模块化神经网络架构
-* 前向与反向传播
-* 参数管理
-* 训练与推理流水线
-
-### 层
-
-* 全连接层
-* 卷积层
-* 池化层
-* 展平层
+## 01 基础
 
 ### 激活函数
 
@@ -211,7 +310,94 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 * 交叉熵损失
 
-## 卷积层
+## 02 正则化
+
+一言以蔽之，正则化的目的是为了减少过拟合。
+
+### 数据增强
+
+* 随机空间变换
+* 像素变换
+
+### 损失函数
+
+### 数据归一化
+
+常见方法包括最小-最大归一化（min-max normalization）和方差归一化。归一化既可以作为输入数据的预处理步骤，也可以集成在网络内部。
+
+#### 批量归一化
+
+批量归一化引入了一个包含两个可学习参数（缩放因子 $\gamma$ 和平移因子 $\beta$）的归一化层。对于每个小批量（mini-batch）数据，计算激活值的均值和标准差，并利用它们将输入归一化为均值为 0、方差为 1 的分布。随后，归一化后的激活值利用 $\gamma$ 和 $\beta$ 进行变换，再传递给下一层。
+
+### Dropout
+
+## 03 初始化
+
+🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Initializers.py)
+
+由于采用非线性激活函数的神经网络通常涉及高维非凸的优化问题，因此，恰当的权重初始化对于成功训练至关重要。不当的初始化可能导致梯度消失或爆炸、收敛缓慢以及优化不稳定。
+
+全连接层的表示：
+
+- **fan_in**：该层的输入单元数量（权重的输入维度）
+- **fan_out**：该层的输出单元数量（权重的输出维度）
+
+卷积层的表示：
+
+- **fan_in**：输入通道数 × 卷积核高度 × 卷积核宽度
+- **fan_out**：输出通道数 × 卷积核高度 × 卷积核宽度
+
+Xavier (Glorot) 初始化和 He 初始化等方法常利用这些数值来保持各层间激活值和梯度的方差，从而提高训练的稳定性和收敛速度。
+
+### 偏置初始化
+
+偏置项通常初始化为零，因为它们不存在与权重相关的对称性破坏问题。一个例外情况是使用 ReLU 激活函数时，可能会使用一个小的正数常量来降低“死亡 ReLU”（dying ReLU）问题的风险。
+
+### 权重初始化
+
+权重应随机初始化，以打破神经元之间的对称性。如果将所有权重初始化为零，同一层中的每个神经元在反向传播过程中都会接收到相同的梯度，从而导致网络无法学习到多样化的特征。 
+
+### 常数初始化 (Constant Initialization)
+
+常数初始化将所有参数设为相同的值（该框架中的默认值为 0.1）。虽然这种方法适用于偏置（bias）初始化，但通常不适用于权重初始化，因为它无法打破神经元之间的对称性。结果导致所有神经元学习相同的特征。
+
+### Xavier (Glorot) 初始化
+
+Xavier 初始化常用于采用对称激活函数（如 sigmoid 或 tanh）的网络层。它根据输入单元和输出单元的数量来缩放权重的方差，有助于在整个网络中保持激活值和梯度的稳定流动。
+
+权重从均值为零的高斯分布中采样：
+
+\[
+w \sim \mathcal{N}(0,\sigma)
+\]
+
+其中
+
+\[
+\sigma = \sqrt{\frac{2}{\text{fan\_in} + \text{fan\_out}}}
+\]
+
+### He 初始化
+
+He 初始化是对 Xavier 初始化的一种改进，专为基于 ReLU 的网络设计。由于 ReLU 激活函数会丢弃负值，He 初始化通过仅利用输入连接的数量来缩放方差，从而对此进行了补偿。
+
+权重从均值为零的高斯分布中采样：
+
+\[
+w \sim \mathcal{N}(0,\sigma)
+\]
+
+其中
+
+\[
+\sigma = \sqrt{\frac{2}{\text{fan\_in}}}
+\]
+
+通过保持各层间激活值的方差，He 初始化有助于缓解梯度消失问题，并往往能使深层 ReLU 网络的训练更快、更稳定。
+
+## 04 卷积神经网络（CNN）
+
+### 卷积层（Convolutional Layer)
 
 🔗 **Source Code:** [Conv.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Conv.py)
 
@@ -221,7 +407,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
   <img src="images/conv_a_cn.png" width="800">
 </p>
 
-### 前向传播
+#### 前向传播
 
 偏置（Bias）是加到卷积核输出特征图上的一个标量值。 例如，下图展示了一个卷积核生成的特征图。如果该卷积核对应的 Bias 为 2，则该 Bias 会被逐元素加到特征图的每一个位置。
 
@@ -230,7 +416,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
   <img src="images/bias.png" width="800">
 </p>
 
-### 反向传播
+#### 反向传播
 
 在反向传播中，我们计算的目标有两个，第一个是计算权重相对于损失函数的梯度和计算偏置相对于损失函数的梯度：
 
@@ -248,7 +434,7 @@ $$
 
 从而将梯度返还到上一层。
 
-#### 权重相对于损失函数的梯度
+##### 权重相对于损失函数的梯度
 
 与全连接神经网络类似，根据链式法则可得到：
 ```math
@@ -262,7 +448,7 @@ $$
 
 如果前向传播使用的是真正的卷积运算，则需要在反向传播过程中将卷积核在 $x$-$y$ 平面内旋转 $180^\circ$，然后再进行相应的梯度计算。
 
-#### 偏置对于损失函数的梯度
+##### 偏置对于损失函数的梯度
 
 根据链式法则：
 
@@ -282,7 +468,7 @@ $$
 \frac{\partial L}{\partial B}=\sum_{i,j}\frac{\partial L}{\partial Y_{ij}}.
 ```
 
-#### 输入张量相对于损失函数的梯度
+##### 输入张量相对于损失函数的梯度
 
 与全连接神经网络类似，根据链式法则：
 
@@ -298,7 +484,7 @@ $$
 
 其中 $*$ 表示卷积（Convolution）运算。
 
-#### python实现步骤
+##### python实现步骤
 
 首先，需要将梯度张量扩展到与输入张量对应的空间尺寸。 在前向传播过程中，由于步长（Stride）的存在，输出特征图经过下采样后，其空间尺寸会改变。 为了将梯度传播回输入空间，需要对梯度张量进行上采样（Upsampling）。
 
@@ -306,30 +492,25 @@ $$
 
 随后，使用扩展后的梯度计算 Bias 梯度；对输入张量进行 Padding，并通过互相关运算计算权重梯度；将扩展后的梯度与卷积核进行卷积运算，得到输入梯度；使用优化器更新权重和 Bias 参数。
 
-## Project Structure
+### 池化层（Pooling Layer）
 
-```text
-Layers/
-├── Base.py
-├── FullyConnected.py
-├── Conv.py
-├── Pooling.py
-├── Flatten.py
-├── ReLU.py
-├── SoftMax.py
-├── Initializers.py
+🔗 **Source Code:** [Pooling.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Pooling.py)
 
-Optimization/
-├── Loss.py
-├── Optimizers.py
+池化层（Pooling Layer）通常位于卷积层之后，用于对卷积层生成的特征图进行空间降采样（Downsampling），并且对每个特征图独立进行操作。 
 
-NeuralNetwork.py
-```
+经过卷积层处理后，网络已经提取出了输入数据中的局部特征。此时，后续计算通常不再需要与原始输入相同的空间分辨率，因此可以通过池化操作降低特征图的空间维度，从而减少计算量和参数规模。 常见的池化操作有两种，一种是平均池化（Mean Pooling），一种是最大池化（Max Pooling）。
 
-## Technologies
+需要注意的是，池化过程会丢失部分空间细节信息，但能够保留特征图中的主要响应。例如，在最大池化（Max Pooling）中，每个池化窗口内仅保留最大值，从而保留最显著的局部特征。
 
-* Python
-* NumPy
+#### 前向传播
+
+传播过程与卷积层相似，这里出入的是卷积层生成的特征图，经过池化窗口池化后，生成池化后的降维图。
+
+重要的是，在前向传播中，需要记录所选取最大值的位置，位置在反向传播中需要使用。
+
+#### 反向传播
+
+## 05 循环神经网络（RNN）
 
 
 
