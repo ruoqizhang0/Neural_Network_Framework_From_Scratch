@@ -1,80 +1,73 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Neural Network Framework from Scratch](#neural-network-framework-from-scratch)
+  - [Neural Network Basics](#neural-network-basics)
+    - [Activation Functions](#activation-functions)
+    - [Optimization](#optimization)
+    - [Loss Functions](#loss-functions)
+  - [Regularization](#regularization)
+    - [Data Augmentation](#data-augmentation)
+    - [Loss Functions](#loss-functions-1)
+    - [Data Normalization](#data-normalization)
+      - [Batch Normalization](#batch-normalization)
+    - [Dropout](#dropout)
+  - [Initialization](#initialization)
+    - [Bias Initialization](#bias-initialization)
+    - [Weight Initialization](#weight-initialization)
+    - [Constant Initialization](#constant-initialization)
+    - [Xavier (Glorot) Initialization](#xavier-glorot-initialization)
+    - [He Initialization](#he-initialization)
+  - [Convolutional Neural Networks (CNN)](#convolutional-neural-networks-cnn)
+    - [Convolutional Layer](#convolutional-layer)
+      - [Forward pass](#forward-pass)
+      - [Backward pass](#backward-pass)
+        - [Gradient of the Loss with Respect to the Weights](#gradient-of-the-loss-with-respect-to-the-weights)
+        - [Gradient of the Loss with Respect to the Bias](#gradient-of-the-loss-with-respect-to-the-bias)
+        - [Gradient of the Loss with Respect to the Input Tensor](#gradient-of-the-loss-with-respect-to-the-input-tensor)
+        - [Implementation](#implementation)
+    - [Pooling Layer](#pooling-layer)
+      - [Forward pass](#forward-pass-1)
+      - [Backward pass](#backward-pass-1)
+  - [Recurrent Neural Network(RNN)](#recurrent-neural-networkrnn)
+- [从零开始搭建神经网络](#%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%90%AD%E5%BB%BA%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)
+  - [基础](#%E5%9F%BA%E7%A1%80)
+    - [激活函数](#%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0)
+    - [优化](#%E4%BC%98%E5%8C%96)
+    - [损失函数](#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0)
+  - [正则化](#%E6%AD%A3%E5%88%99%E5%8C%96)
+    - [数据增强](#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA)
+    - [损失函数](#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0-1)
+    - [数据归一化](#%E6%95%B0%E6%8D%AE%E5%BD%92%E4%B8%80%E5%8C%96)
+      - [批量归一化](#%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96)
+    - [Dropout](#dropout-1)
+  - [初始化](#%E5%88%9D%E5%A7%8B%E5%8C%96)
+    - [偏置初始化](#%E5%81%8F%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%8C%96)
+    - [权重初始化](#%E6%9D%83%E9%87%8D%E5%88%9D%E5%A7%8B%E5%8C%96)
+    - [常数初始化 (Constant Initialization)](#%E5%B8%B8%E6%95%B0%E5%88%9D%E5%A7%8B%E5%8C%96-constant-initialization)
+    - [Xavier (Glorot) 初始化](#xavier-glorot-%E5%88%9D%E5%A7%8B%E5%8C%96)
+    - [He 初始化](#he-%E5%88%9D%E5%A7%8B%E5%8C%96)
+  - [卷积神经网络（CNN）](#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Ccnn)
+    - [卷积层（Convolutional Layer)](#%E5%8D%B7%E7%A7%AF%E5%B1%82convolutional-layer)
+      - [前向传播](#%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD)
+      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD)
+        - [权重相对于损失函数的梯度](#%E6%9D%83%E9%87%8D%E7%9B%B8%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
+        - [偏置对于损失函数的梯度](#%E5%81%8F%E7%BD%AE%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
+        - [输入张量相对于损失函数的梯度](#%E8%BE%93%E5%85%A5%E5%BC%A0%E9%87%8F%E7%9B%B8%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
+        - [python实现步骤](#python%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4)
+    - [池化层（Pooling Layer）](#%E6%B1%A0%E5%8C%96%E5%B1%82pooling-layer)
+      - [前向传播](#%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
+      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
+  - [循环神经网络（RNN）](#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Crnn)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Neural Network Framework from Scratch
 
 A modular deep learning framework implemented from scratch using Python and NumPy.
 
-## Contents
-
-## Contents
-
-- [01 Neural Network Basics](#01-neural-network-basics)
-  - [Activation Functions](#activation-functions)
-  - [Optimization](#optimization)
-  - [Loss Functions](#loss-functions)
-
-- [02 Regularization](#02-regularization)
-  - [Data Augmentation](#data-augmentation)
-  - [Loss Functions](#loss-functions-1)
-  - [Data Normalization](#data-normalization)
-    - [Batch Normalization](#batch-normalization)
-  - [Dropout](#dropout)
-
-- [03 Initialization](#03-initialization)
-  - [Bias Initialization](#bias-initialization)
-  - [Weight Initialization](#weight-initialization)
-  - [Constant Initialization](#constant-initialization)
-  - [Xavier (Glorot) Initialization](#xavier-glorot-initialization)
-  - [He Initialization](#he-initialization)
-
-- [04 Convolutional Neural Networks (CNN)](#04-convolutional-neural-networks-cnn)
-  - [Convolutional Layer](#convolutional-layer)
-    - [Forward Pass](#forward-pass)
-    - [Backward Pass](#backward-pass)
-      - [Gradient of the Loss with Respect to the Weights](#gradient-of-the-loss-with-respect-to-the-weights)
-      - [Gradient of the Loss with Respect to the Bias](#gradient-of-the-loss-with-respect-to-the-bias)
-      - [Gradient of the Loss with Respect to the Input Tensor](#gradient-of-the-loss-with-respect-to-the-input-tensor)
-      - [Implementation](#implementation)
-  - [Pooling Layer](#pooling-layer)
-    - [Forward Pass](#forward-pass-1)
-    - [Backward Pass](#backward-pass-1)
-
-- [05 Recurrent Neural Networks (RNN)](#05-recurrent-neural-networks-rnn)
-
----
-
-## 中文目录
-
-- [01 基础](#01-基础)
-  - [激活函数](#激活函数)
-  - [优化](#优化)
-  - [损失函数](#损失函数)
-
-- [02 正则化](#02-正则化)
-  - [数据增强](#数据增强)
-  - [损失函数](#损失函数-1)
-  - [数据归一化](#数据归一化)
-    - [批量归一化](#批量归一化)
-  - [Dropout](#dropout-1)
-
-- [03 初始化](#03-初始化)
-  - [偏置初始化](#偏置初始化)
-  - [权重初始化](#权重初始化)
-  - [常数初始化](#常数初始化-constant-initialization)
-  - [Xavier-Glorot-初始化](#xavier-glorot-初始化)
-  - [He 初始化](#he-初始化)
-
-- [04 卷积神经网络（CNN）](#04-卷积神经网络cnn)
-  - [卷积层](#卷积层convolutional-layer)
-    - [前向传播](#前向传播)
-    - [反向传播](#反向传播)
-      - [权重相对于损失函数的梯度](#权重相对于损失函数的梯度)
-      - [偏置对于损失函数的梯度](#偏置对于损失函数的梯度)
-      - [输入张量相对于损失函数的梯度](#输入张量相对于损失函数的梯度)
-      - [Python实现步骤](#python实现步骤)
-  - [池化层](#池化层pooling-layer)
-    - [前向传播](#前向传播-1)
-    - [反向传播](#反向传播-1)
-
-## 01 Neural Network Basics
+## Neural Network Basics
 
 ### Activation Functions
 
@@ -90,7 +83,7 @@ A modular deep learning framework implemented from scratch using Python and NumP
 
 * Cross Entropy Loss
 
-## 02 Regularization
+## Regularization
 
 ### Data Augmentation
 
@@ -109,7 +102,7 @@ Batch Normalization introduces a normalization layer with two learnable paramete
 
 ### Dropout
 
-## 03 Initialization
+## Initialization
 
 🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Initializers.py)
 
@@ -173,7 +166,7 @@ where
 
 By preserving the variance of activations across layers, He initialization helps mitigate vanishing gradients and often leads to faster and more stable training in deep ReLU networks.
 
-## 04 Convolutional Neural Networks (CNN)
+## Convolutional Neural Networks (CNN)
 
 ### Convolutional Layer
 
@@ -288,13 +281,13 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 #### Backward pass
 
-## 05 Recurrent Neural Network(RNN)
+## Recurrent Neural Network(RNN)
 
 # 从零开始搭建神经网络
 
 这是一个完全使用 Python 和 NumPy 的模块化深度学习框架。
 
-## 01 基础
+## 基础
 
 ### 激活函数
 
@@ -310,7 +303,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 * 交叉熵损失
 
-## 02 正则化
+## 正则化
 
 一言以蔽之，正则化的目的是为了减少过拟合。
 
@@ -331,7 +324,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 ### Dropout
 
-## 03 初始化
+## 初始化
 
 🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/Initializers.py)
 
@@ -395,7 +388,7 @@ w \sim \mathcal{N}(0,\sigma)
 
 通过保持各层间激活值的方差，He 初始化有助于缓解梯度消失问题，并往往能使深层 ReLU 网络的训练更快、更稳定。
 
-## 04 卷积神经网络（CNN）
+## 卷积神经网络（CNN）
 
 ### 卷积层（Convolutional Layer)
 
@@ -510,7 +503,7 @@ $$
 
 #### 反向传播
 
-## 05 循环神经网络（RNN）
+## 循环神经网络（RNN）
 
 
 
