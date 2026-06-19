@@ -1,5 +1,3 @@
-from encodings.punycode import selective_len
-
 import numpy as np
 from Layers import Base
 

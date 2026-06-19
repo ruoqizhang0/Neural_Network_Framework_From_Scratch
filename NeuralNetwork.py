@@ -34,12 +34,33 @@ class NeuralNetwork:
         self.layers.append(layer)
 
     def train(self, iterations):
+        self.phase = False
+
         for _ in range(iterations):
             loss = self.forward()
             self.loss.append(loss)
             self.backward()
 
     def test(self, x):
+        self.phase = True
+
         for layer in self.layers:
             x = layer.forward(x)
+
         return x
+
+    def norm(self, weights):
+        for layer in self.layers:
+            layer.norm()
+            
+
+    @property
+    def phase(self):
+        return self._phase
+
+    @phase.setter
+    def phase(self, value):
+        self._phase = value
+
+        for layer in self.layers:
+            layer.testing_phase = value

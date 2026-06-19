@@ -1,5 +1,3 @@
-from fontTools.feaLib import error
-
 from Layers import Base
 import numpy as np
 
@@ -41,3 +39,19 @@ class FullyConnected(Base.BaseLayer):
     @property
     def gradient_weights(self):
         return self.dL_dW
+
+    def initialize(self, weights_initializer, bias_initializer):
+        fan_in = self.input_size
+        fan_out = self.output_size
+
+        self.weights[1:, :] = weights_initializer.initialize(
+            self.weights[1:, :].shape,
+            fan_in,
+            fan_out
+        )
+
+        self.weights[0, :] = bias_initializer.initialize(
+            self.weights[0, :].shape,
+            fan_in,
+            fan_out
+        )
