@@ -136,7 +136,7 @@ Since the L1 penalty applies a constant shrinkage to all non-zero parameters, it
 In backward pass, the corresponding parameter update rule is
 
 ```math
-\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \operatorname{sign}(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
+\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda sign (\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
 -
 \eta \frac{\partial L}{\partial \mathbf{w}^{(k)}}
 ```
@@ -165,7 +165,7 @@ Figure 2 illustrates the concept of DropConnect. The red dashed lines represent 
 
 #### Implementation
 
-During the forward pass, a random mask with the same shape as the input tensor is generated. For each element in the mask, the corresponding neuron is retained with probability (p) and deactivated with probability (1-p). The input tensor is then multiplied element-wise by the mask, causing approximately ((1-p)) of the neurons to be randomly dropped and excluded from the forward propagation.
+During the forward pass, a random mask with the same shape as the input tensor is generated. For each element in the mask, the corresponding neuron is retained with probability (p) and deactivated with probability (1-p). The input tensor is then multiplied element-wise by the mask, causing approximately (1-p) of the neurons to be randomly dropped and excluded from the forward propagation.
 
 Since only a fraction (p) of the neurons remain active during training, the activations of the retained neurons are scaled by $\frac{1}{p}$. Consequently, no additional scaling is required during the testing phase, and all neurons participate directly in the computation.
 
@@ -427,7 +427,7 @@ L1 正则化通过权重绝对值之和施加惩罚，使部分参数在优化�
 在反向传播中，L1 正则项关于权重的次梯度（subgradient）为：
 
 ```math
-\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \operatorname{sign}(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
+\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda sign (\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
 -
 \eta \frac{\partial L}{\partial \mathbf{w}^{(k)}}
 ```
@@ -452,7 +452,7 @@ DropConnect 将随机失活的方法从神经元延伸到连接权重。在训�
 
 正向传播中，首先生成一个与输入张量形状相同的随机掩码（mask）。对于掩码中的每个元素，以概率 (p) 保留对应神经元，以概率 (1-p) 将其置零。 随后，将输入张量与掩码进行逐元素相乘，这样便有约 (1-p) 的神经元被随机失活，不参与前向传播。
 
-由于训练阶段仅有 (p) 比例的神经元参与计算，为了保持训练阶段和测试阶段激活值的期望一致，即在训练阶段将保留下来的激活值缩放$\frac{1}{p}$，因此，在测试阶段无需再进行额外缩放，所有神经元直接参与计算即可。
+由于训练阶段仅有 (p) 比例的神经元参与计算，为了保持训练阶段和测试阶段激活值的期望一致，即在训练阶段将保留下来的激活值缩放 $\frac{1}{p}$，因此，在测试阶段无需再进行额外缩放，所有神经元直接参与计算即可。
 
 反向传播中，使用与前向传播相同的掩码矩阵。对于前向传播中被随机失活的神经元，其梯度也应被置零，从而保证这些神经元不会参与参数更新。
 
