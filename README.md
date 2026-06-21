@@ -96,7 +96,7 @@ A modular deep learning framework implemented from scratch using Python and NumP
 
 ### Augmented Loss Function
 
-🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Optimization/Constraints.py)
+🔗 **Source Code:** [Constraints.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Optimization/Constraints.py)
 
 Regularization terms can be added to the original loss function, resulting in an Augmented Loss Function. Unlike the primary loss, which measures prediction errors, regularization terms are designed to constrain model parameters, reduce model complexity and overfitting. For neural networks, both L1 and L2 regularization are typically applied to the trainable weights. Therefore, the regularization term depends only on the weights.
 
@@ -107,7 +107,7 @@ In this framework, during the forward pass, each trainable layer computes its ow
 L2 regularization penalizes large weights by adding the squared L2 norm of the parameters to the loss function. This encourages the network to learn smaller parameter values while typically preserving all features, since weights are rarely driven exactly to zero. The augmented loss function is defined as
 
 ```math
-\tidle{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lamda\|\mathbf{w}\|^2_2
+\tilde{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lambda\|\mathbf{w}\|^2_2
 ```
 
 Using the L2 norm eliminates the square root operation, resulting in a simpler and more numerically stable gradient expression. 
@@ -128,7 +128,7 @@ The shrinkage term continuously reduces the magnitude of the weights and is comm
 L1 regularization penalizes the sum of the absolute values of the weights. Unlike L2 regularization, it promotes sparsity by driving some parameters exactly to zero, which can provide an implicit form of feature selection. The augmented loss function is defined as
 
 ```math
-\tidle{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lamda\|\mathbf{w}\|_1
+\tilde{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lambda\|\mathbf{w}\|_1
 ```
 
 Since the L1 penalty applies a constant shrinkage to all non-zero parameters, it tends to produce sparse weight distributions.
@@ -136,7 +136,7 @@ Since the L1 penalty applies a constant shrinkage to all non-zero parameters, it
 In backward pass, the corresponding parameter update rule is
 
 ```math
-\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \sign(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
+\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \operatorname{sign}(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
 -
 \eta \frac{\partial L}{\partial \mathbf{w}^{(k)}}
 ```
@@ -189,15 +189,15 @@ Xavier initialization is commonly used for layers with symmetric activation func
 
 Weights are sampled from a zero-mean Gaussian distribution:
 
-\[
+```math
 w \sim \mathcal{N}(0,\sigma)
-\]
+```
 
 where
 
-\[
+```math
 \sigma = \sqrt{\frac{2}{\text{fan\_in} + \text{fan\_out}}}
-\]
+```
 
 ### He Initialization
 
@@ -205,15 +205,15 @@ He initialization is a modification of Xavier initialization designed specifical
 
 Weights are sampled from a zero-mean Gaussian distribution:
 
-\[
+```math
 w \sim \mathcal{N}(0,\sigma)
-\]
+```
 
 where
 
-\[
+```math
 \sigma = \sqrt{\frac{2}{\text{fan\_in}}}
-\]
+```
 
 By preserving the variance of activations across layers, He initialization helps mitigate vanishing gradients and often leads to faster and more stable training in deep ReLU networks.
 
@@ -365,7 +365,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 ### 增强型损失函数（Augmented Loss Function）
 
-🔗 **Source Code:** [Initializers.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Optimization/Constraints.py)
+🔗 **Source Code:** [Constraints.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Optimization/Constraints.py)
 
 所谓增强，即是将正则项（Regularization Term）添加到损失函数上，从而构成增强损失函数（Augmented Loss Function）。正则项独立于损失函数，与衡量预测误差的损失函数不同，正则项用于约束模型参数，降低模型复杂度并缓解过拟合。 对于神经网络而言，L1 和 L2 正则化通常作用于权重（weights），因此正则项仅与参数有关。
 
@@ -376,7 +376,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 L2 正则化通过对较大的权重施加额外惩罚，使模型倾向于学习幅值较小的参数，但通常不会使权重严格变为零，其增强损失函数定义为：
 
 ```math
-\tidle{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lamda\|\mathbf{w}\|^2_2
+\tilde{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lambda\|\mathbf{w}\|^2_2
 ```
 
 在前向传播中，L2 范数的形式消除了内部的平方根，提高了数值稳定性，梯度更易于计算。
@@ -394,13 +394,13 @@ L2 正则化通过对较大的权重施加额外惩罚，使模型倾向于学�
 L1 正则化通过权重绝对值之和施加惩罚，使部分参数在优化过程中被压缩为零，从而产生稀疏解（sparse solution），并具有一定的特征选择能力。与 L2 正则化不同，L1 正则化对所有非零参数施加恒定大小的收缩作用，因此更容易产生稀疏权重分布。其增强损失函数定义为：
 
 ```math
-\tidle{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lamda\|\mathbf{w}\|_1
+\tilde{L}(\mathbf{w}, \mathbf{X}, \mathbf{Y}) = L(\mathbf{w}, \mathbf{X}, \mathbf{Y}) + \lambda\|\mathbf{w}\|_1
 ```
 
 在反向传播中，L1 正则项关于权重的次梯度（subgradient）为：
 
 ```math
-\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \sign(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
+\mathbf{w}^{(k+1)}=\underbrace{\left(\mathbf{w}^{(k)}-\eta\lambda \operatorname{sign}(\mathbf{w}^{(k)})\right)}_{\text{Other shrinkage}}
 -
 \eta \frac{\partial L}{\partial \mathbf{w}^{(k)}}
 ```
@@ -453,15 +453,15 @@ Xavier 初始化常用于采用对称激活函数（如 sigmoid 或 tanh）的�
 
 权重从均值为零的高斯分布中采样：
 
-\[
+```math
 w \sim \mathcal{N}(0,\sigma)
-\]
+```
 
 其中
 
-\[
+```math
 \sigma = \sqrt{\frac{2}{\text{fan\_in} + \text{fan\_out}}}
-\]
+```
 
 ### He 初始化
 
@@ -469,15 +469,15 @@ He 初始化是对 Xavier 初始化的一种改进，专为基于 ReLU 的网络
 
 权重从均值为零的高斯分布中采样：
 
-\[
+```math
 w \sim \mathcal{N}(0,\sigma)
-\]
+```
 
 其中
 
-\[
+```math
 \sigma = \sqrt{\frac{2}{\text{fan\_in}}}
-\]
+```
 
 通过保持各层间激活值的方差，He 初始化有助于缓解梯度消失问题，并往往能使深层 ReLU 网络的训练更快、更稳定。
 
