@@ -390,7 +390,7 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 * 随机空间变换
 * 像素变换
 
-### 增强型损失函数（Augmented Loss Function）
+### 增强型损失函数(Augmented Loss Function)
 
 🔗 **Source Code:** [Constraints.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Optimization/Constraints.py)
 
@@ -432,13 +432,133 @@ L1 正则化通过权重绝对值之和施加惩罚，使部分参数在优化�
 \eta \frac{\partial L}{\partial \mathbf{w}^{(k)}}
 ```
 
-### 数据归一化
+### 批量标准化(Batch normalization)
 
-常见方法包括最小-最大归一化（min-max normalization）和方差归一化。归一化既可以作为输入数据的预处理步骤，也可以集成在网络内部。
+🔗 **Source Code:** [BatchNormalization.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/BatchNormalization.py)
 
-#### 批量归一化
+批量标准化（Batch Normalization，BN）在网络中引入了一个标准化层，并增加了两个可学习参数：缩放因子 $\gamma$ 和平移因子 $\beta$。对于每一个 mini-batch，首先计算激活值的均值和方差，并利用这些统计量使得输出均值接近 0 ，输出标准差接近 1。随后，再利用 $\gamma$ 和 $\beta$ 对标准化后的结果进行线性变换，以恢复网络的表达能力。
 
-批量归一化引入了一个包含两个可学习参数（缩放因子 $\gamma$ 和平移因子 $\beta$）的归一化层。对于每个小批量（mini-batch）数据，计算激活值的均值和标准差，并利用它们将输入归一化为均值为 0、方差为 1 的分布。随后，归一化后的激活值利用 $\gamma$ 和 $\beta$ 进行变换，再传递给下一层。
+#### 正向传播
+
+输入张量首先进行标准化：
+
+```math
+\tilde{\mathbf{X}} = \frac{\mathbf{X} - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}
+```
+
+其中，$\mu_B$ 和 $\sigma_B^2$ 分别表示当前 mini-batch 的均值和方差，$\epsilon$ 为防止除零错误而引入的极小常数。随后，对归一化结果进行缩放和平移：
+
+```math
+\hat{\mathbf{Y}} = \gamma \tilde{\mathbf{X}} + \beta
+```
+
+其中，$\gamma$ 为缩放参数（scale），$\beta$ 为平移参数(shift)，其作用与全连接层中的偏置项(bias)类似。
+
+#### 测试时长
+
+在测试阶段同样需要进行标准化。然而，直接利用整个训练集计算真实均值和方差代价较高，因此通常采用**指数移动平均(Exponential Moving Average, EMA)**来估计全局统计量：
+
+```math
+\tilde{\mu}^{(k)}
+\approx
+\alpha \tilde{\mu}^{(k-1)}
++
+(1-\alpha)\mu_B^{(k)}
+```
+
+```math
+\tilde{\sigma}^{2(k)}
+\approx
+\alpha \tilde{\sigma}^{2(k-1)}
++
+(1-\alpha)\sigma_B^{2(k)}
+```
+
+其中，$\alpha$ 为**衰减系数(decay factor)**，例如 $\alpha = 0.8$ 。上标 (k) 和 (k-1) 分别表示当前迭代和上一迭代。
+
+#### 反向传播
+
+对于 BN 层中的可学习参数，权重梯度和偏置梯度计算较为直接：
+
+```math
+\frac{\partial L}{\partial \gamma}
+=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \hat{\mathbf{Y}}_b}
+\tilde{\mathbf{X}}_b
+```
+
+```math
+\frac{\partial L}{\partial \beta}
+=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \hat{\mathbf{Y}}_b}
+$$
+```
+
+输入张量相对于损失函数的梯度推导则更加复杂：：
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}}
+&=
+\frac{\partial L}{\partial \hat{\mathbf{Y}}}
+\odot \gamma
+\\[10pt]
+\frac{\partial L}{\partial \sigma_B^2}
+&=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}_b}
+\odot
+(\mathbf{X}_b-\mu_B)
+\odot
+\left(
+-\frac{1}{2}
+(\sigma_B^2+\epsilon)^{-\frac{3}{2}}
+\right)
+\\[10pt]
+\frac{\partial L}{\partial \mu_B}
+&=
+\left(
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}_b}
+\odot
+\frac{-1}{\sqrt{\sigma_B^2+\epsilon}}
+\right)
++
+\frac{\partial L}{\partial \sigma_B^2}
+\odot
+\frac{\sum_{b=1}^{B}-2(\mathbf{X}_b-\mu_B)}{B}
+\\[10pt]
+\frac{\partial L}{\partial \mathbf{X}}
+&=
+\frac{\partial L}{\partial \tilde{\mathbf{X}}}
+\odot
+\frac{1}{\sqrt{\sigma_B^2+\epsilon}}
++
+\frac{\partial L}{\partial \sigma_B^2}
+\odot
+\frac{2(\mathbf{X}-\mu_B)}{B}
++
+\frac{\partial L}{\partial \mu_B}
+\odot
+\frac{1}{B}
+\end{aligned}
+```
+
+其中，$\odot$ 表示逐元素乘， 由于输入梯度的推导过程较为繁琐，在具体实现中调用辅助函数 `compute_bn_gradients` 来完成 BN 的梯度计算。
+
+#### 卷及神经网络中的批量标准化(Convolutional Batch Normalization)
+
+对于CNNs，BN 需要对每个通道（channel）分别计算均值和方差。关键观察在于，空间维度 $M$ 和 $N$ 中的所有位置共享同一组统计量，因此空间维度可以与批次维度 (B) 一同参与统计计算，从而复用全连接层 Batch Normalization 的实现。
+
+具体步骤如下：
+
+将形状为 (B \times H \times M \times N) 的张量重塑为 (B \times H \times (M \cdot N))；
+对张量进行转置，得到 (B \times (M \cdot N) \times H)；
+再次重塑为 ((B \cdot M \cdot N) \times H)；
+在该表示下，每个通道对应一列数据，可直接应用已有的 Batch Normalization 实现；
+在反向传播阶段，按照相反顺序恢复张量原始形状。
 
 ### Dropout
 
