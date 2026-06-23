@@ -294,11 +294,19 @@ In this representation, each column corresponds to a single channel, while each 
 
 Dropout is a widely used regularization technique in deep learning. During training, each hidden neuron is deactivated with probability (1-p) and kept active with probability (p). By randomly generating different subnetworks in each iteration, Dropout effectively reduces the co-adaptation of neurons and reduces overfitting.
 
-Figure 1 illustrates the concept of Dropout. The dashed circle represents a neuron that has been randomly dropped. Its output is set to zero and it does not participate in the current forward pass.
+Figure right illustrates the concept of Dropout. The dashed circle represents a neuron that has been randomly dropped. Its output is set to zero and it does not participate in the current forward pass.
 
 DropConnect extends the idea of random deactivation from neurons to connection weights. During training, each connection weight is set to zero with probability (1-p) and retained with probability (p). Unlike Dropout, DropConnect does not remove neurons themselves; instead, it randomly removes connections between neurons. As a result, all neurons remain active, while the network connectivity changes during each forward pass, producing different sparse network structures.
 
-Figure 2 illustrates the concept of DropConnect. The red dashed lines represent connection weights that have been randomly set to zero and therefore do not participate in the current forward pass.
+Figure left illustrates the concept of DropConnect. The red dashed lines represent connection weights that have been randomly set to zero and therefore do not participate in the current forward pass.
+
+<p align="center">
+  <img src="images/dropconnect_dropout.png" width="800" />
+</p>
+
+<p align="center">
+  <em>DropConnect(left) and Dropout(right).</em>
+</p>
 
 #### Implementation
 
@@ -307,15 +315,6 @@ During the forward pass, a random mask with the same shape as the input tensor i
 Since only a fraction (p) of the neurons remain active during training, the activations of the retained neurons are scaled by $\frac{1}{p}$. Consequently, no additional scaling is required during the testing phase, and all neurons participate directly in the computation.
 
 During the backward pass, the same mask generated in the forward pass is reused. Any neuron that was dropped during the forward propagation must also have its gradient set to zero. This guarantees that dropped neurons do not contribute to parameter updates. As a result, only the neurons retained during the forward pass are allowed to receive and propagate gradient information.
-
-<p align="center">
-  <img src="images/dropout.png" width="48%" />
-  <img src="images/dropconnect.png" width="48%" />
-</p>
-
-<p align="center">
-  <em>Dropout (left) and DropConnect (right).</em>
-</p>
 
 ## Initialization
 
@@ -701,6 +700,14 @@ Dropout 在训练过程中随机丢弃部分神经元。对于每个隐藏层神
 
 DropConnect 将随机失活的方法从神经元延伸到连接权重。在训练过程中，每条连接权重以概率 (1-p) 被置为 0，以概率 (p) 保持有效。与Dropout不同，DropConnect不会移除神经元本身，而是随机移除神经元之间的连接。因此，所有神经元都保持激活，但网络的连接结构在每次前向传播时都会发生变化，从而形成不同的稀疏网络。以下图2为DropConnect示意图。红色虚线表示被随机置零的连接权重，该连接在当前前向传播中不参与计算。
 
+<p align="center">
+  <img src="images/dropconnect_dropout.png" width="800" />
+</p>
+
+<p align="center">
+  <em>DropConnect(left) and Dropout(right).</em>
+</p>
+
 #### 实现过程
 
 正向传播中，首先生成一个与输入张量形状相同的随机掩码（mask）。对于掩码中的每个元素，以概率 (p) 保留对应神经元，以概率 (1-p) 将其置零。 随后，将输入张量与掩码进行逐元素相乘，这样便有约 (1-p) 的神经元被随机失活，不参与前向传播。
@@ -708,15 +715,6 @@ DropConnect 将随机失活的方法从神经元延伸到连接权重。在训�
 由于训练阶段仅有 (p) 比例的神经元参与计算，为了保持训练阶段和测试阶段激活值的期望一致，即在训练阶段将保留下来的激活值缩放 $\frac{1}{p}$，因此，在测试阶段无需再进行额外缩放，所有神经元直接参与计算即可。
 
 反向传播中，使用与前向传播相同的掩码矩阵。对于前向传播中被随机失活的神经元，其梯度也应被置零，从而保证这些神经元不会参与参数更新。
-
-<p align="center">
-  <img src="images/dropout.png" width="48%" />
-  <img src="images/dropconnect.png" width="48%" />
-</p>
-
-<p align="center">
-  <em>Dropout (left) and DropConnect (right).</em>
-</p>
 
 ## 初始化
 
