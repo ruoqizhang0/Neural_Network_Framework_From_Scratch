@@ -13,8 +13,13 @@
       - [L2 Regularization](#l2-regularization)
       - [L1 Regularization](#l1-regularization)
     - [Data Normalization](#data-normalization)
-      - [Batch Normalization](#batch-normalization)
+    - [Batch Normalization](#batch-normalization)
+      - [Forward Pass](#forward-pass)
+      - [Test Time](#test-time)
+      - [Backward Pass](#backward-pass)
+      - [Convolutional Batch Normalization](#convolutional-batch-normalization)
     - [Dropout](#dropout)
+      - [Implementation](#implementation)
   - [Initialization](#initialization)
     - [Bias Initialization](#bias-initialization)
     - [Weight Initialization](#weight-initialization)
@@ -23,15 +28,15 @@
     - [He Initialization](#he-initialization)
   - [Convolutional Neural Networks (CNN)](#convolutional-neural-networks-cnn)
     - [Convolutional Layer](#convolutional-layer)
-      - [Forward pass](#forward-pass)
-      - [Backward pass](#backward-pass)
+      - [Forward pass](#forward-pass-1)
+      - [Backward pass](#backward-pass-1)
         - [Gradient of the Loss with Respect to the Weights](#gradient-of-the-loss-with-respect-to-the-weights)
         - [Gradient of the Loss with Respect to the Bias](#gradient-of-the-loss-with-respect-to-the-bias)
         - [Gradient of the Loss with Respect to the Input Tensor](#gradient-of-the-loss-with-respect-to-the-input-tensor)
-        - [Implementation](#implementation)
+        - [Implementation](#implementation-1)
     - [Pooling Layer](#pooling-layer)
-      - [Forward pass](#forward-pass-1)
-      - [Backward pass](#backward-pass-1)
+      - [Forward pass](#forward-pass-2)
+      - [Backward pass](#backward-pass-2)
   - [Recurrent Neural Network(RNN)](#recurrent-neural-networkrnn)
 - [从零开始搭建神经网络](#%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%90%AD%E5%BB%BA%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)
   - [基础](#%E5%9F%BA%E7%A1%80)
@@ -40,12 +45,16 @@
     - [损失函数](#%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0)
   - [正则化](#%E6%AD%A3%E5%88%99%E5%8C%96)
     - [数据增强](#%E6%95%B0%E6%8D%AE%E5%A2%9E%E5%BC%BA)
-    - [增强型损失函数（Augmented Loss Function）](#%E5%A2%9E%E5%BC%BA%E5%9E%8B%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0augmented-loss-function)
+    - [增强型损失函数(Augmented Loss Function)](#%E5%A2%9E%E5%BC%BA%E5%9E%8B%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0augmented-loss-function)
       - [L2正则化](#l2%E6%AD%A3%E5%88%99%E5%8C%96)
       - [L1正则化](#l1%E6%AD%A3%E5%88%99%E5%8C%96)
-    - [数据归一化](#%E6%95%B0%E6%8D%AE%E5%BD%92%E4%B8%80%E5%8C%96)
-      - [批量归一化](#%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96)
+    - [批量标准化(Batch normalization)](#%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96batch-normalization)
+      - [正向传播](#%E6%AD%A3%E5%90%91%E4%BC%A0%E6%92%AD)
+      - [测试时间](#%E6%B5%8B%E8%AF%95%E6%97%B6%E9%97%B4)
+      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD)
+      - [卷积神经网络中的批量标准化(Convolutional Batch Normalization)](#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%E4%B8%AD%E7%9A%84%E6%89%B9%E9%87%8F%E6%A0%87%E5%87%86%E5%8C%96convolutional-batch-normalization)
     - [Dropout](#dropout-1)
+      - [实现过程](#%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B)
   - [初始化](#%E5%88%9D%E5%A7%8B%E5%8C%96)
     - [偏置初始化](#%E5%81%8F%E7%BD%AE%E5%88%9D%E5%A7%8B%E5%8C%96)
     - [权重初始化](#%E6%9D%83%E9%87%8D%E5%88%9D%E5%A7%8B%E5%8C%96)
@@ -55,14 +64,14 @@
   - [卷积神经网络（CNN）](#%E5%8D%B7%E7%A7%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Ccnn)
     - [卷积层（Convolutional Layer)](#%E5%8D%B7%E7%A7%AF%E5%B1%82convolutional-layer)
       - [前向传播](#%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD)
-      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD)
+      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
         - [权重相对于损失函数的梯度](#%E6%9D%83%E9%87%8D%E7%9B%B8%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
         - [偏置对于损失函数的梯度](#%E5%81%8F%E7%BD%AE%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
         - [输入张量相对于损失函数的梯度](#%E8%BE%93%E5%85%A5%E5%BC%A0%E9%87%8F%E7%9B%B8%E5%AF%B9%E4%BA%8E%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E7%9A%84%E6%A2%AF%E5%BA%A6)
         - [python实现步骤](#python%E5%AE%9E%E7%8E%B0%E6%AD%A5%E9%AA%A4)
     - [池化层（Pooling Layer）](#%E6%B1%A0%E5%8C%96%E5%B1%82pooling-layer)
       - [前向传播](#%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
-      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
+      - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-2)
   - [循环神经网络（RNN）](#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Crnn)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -147,9 +156,137 @@ Compared with L2 regularization, L1 regularization is more effective at producin
 
 Common approaches include min-max normalization and variance normalization. Normalization can be performed as a preprocessing step on the input data or incorporated within the network.
 
-#### Batch Normalization
+### Batch Normalization
 
 Batch Normalization introduces a normalization layer with two learnable parameters, $\gamma$ (scale) and $\beta$ (shift). For each mini-batch, the mean and standard deviation of the activations are computed and used to normalize the inputs to have zero mean and unit variance. The normalized activations are then transformed using $\gamma$ and $\beta$ before being passed to the next layer.
+
+🔗 **Source Code:** [BatchNormalization.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Layers/BatchNormalization.py)
+
+#### Forward Pass
+
+The input tensor is normalized using the mean and variance of the current mini-batch:
+
+```math
+\tilde{\mathbf{X}} = \frac{\mathbf{X} - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}
+```
+
+where $\mu_B$ and $\sigma_B^2$ denote the mean and variance of the current mini-batch, respectively, and $\epsilon$ is a small constant introduced for numerical stability to prevent division by zero. The normalized activations are then scaled and shifted using two learnable parameters:
+
+```math
+\hat{\mathbf{Y}} = \gamma \tilde{\mathbf{X}} + \beta
+```
+
+Here, $\gamma$is the learnable scaling parameter, while $\beta$ is the learnable shifting parameter. Similar to a bias term in a fully connected layer, $\beta$ allows the normalized activations to be shifted, whereas $\gamma$ controls their scale.
+
+#### Test Time
+
+Normalization is also required during inference. However, computing the exact mean and variance over the entire training set is computationally expensive. Therefore, BN typically maintains running estimates of the global statistics using an **Exponential Moving Average (EMA)**.
+
+The moving average during training according to
+
+```math
+\tilde{\mu}^{(k)}
+\approx
+\alpha \tilde{\mu}^{(k-1)}
++
+(1-\alpha)\mu_B^{(k)}
+```
+
+```math
+\tilde{\sigma}^{2(k)}
+\approx
+\alpha \tilde{\sigma}^{2(k-1)}
++
+(1-\alpha)\sigma_B^{2(k)}
+```
+
+where: $\mu_B^{(k)}$ is the mean of the k-th mini-batch, $\sigma_B^{2(k)}$ is the variance of the k-th mini-batch, $\alpha$ is the **decay factor** (e.g., $\alpha = 0.8$ ).
+
+#### Backward Pass
+
+The gradients with respect to the learnable parameters are straightforward to compute:
+
+```math
+\frac{\partial L}{\partial \gamma}
+=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \hat{\mathbf{Y}}_b}
+\tilde{\mathbf{X}}_b
+```
+
+```math
+\frac{\partial L}{\partial \beta}
+=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \hat{\mathbf{Y}}_b}
+$$
+```
+
+The gradient with respect to the input tensor is more complex, as the normalization operation depends on both the batch mean and the batch variance:
+
+```math
+\begin{aligned}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}}
+&=
+\frac{\partial L}{\partial \hat{\mathbf{Y}}}
+\odot \gamma
+\\[10pt]
+\frac{\partial L}{\partial \sigma_B^2}
+&=
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}_b}
+\odot
+(\mathbf{X}_b-\mu_B)
+\odot
+\left(
+-\frac{1}{2}
+(\sigma_B^2+\epsilon)^{-\frac{3}{2}}
+\right)
+\\[10pt]
+\frac{\partial L}{\partial \mu_B}
+&=
+\left(
+\sum_{b=1}^{B}
+\frac{\partial L}{\partial \tilde{\mathbf{X}}_b}
+\odot
+\frac{-1}{\sqrt{\sigma_B^2+\epsilon}}
+\right)
++
+\frac{\partial L}{\partial \sigma_B^2}
+\odot
+\frac{\sum_{b=1}^{B}-2(\mathbf{X}_b-\mu_B)}{B}
+\\[10pt]
+\frac{\partial L}{\partial \mathbf{X}}
+&=
+\frac{\partial L}{\partial \tilde{\mathbf{X}}}
+\odot
+\frac{1}{\sqrt{\sigma_B^2+\epsilon}}
++
+\frac{\partial L}{\partial \sigma_B^2}
+\odot
+\frac{2(\mathbf{X}-\mu_B)}{B}
++
+\frac{\partial L}{\partial \mu_B}
+\odot
+\frac{1}{B}
+\end{aligned}
+```
+
+Here, $\odot$ denotes element-wise multiplication. Since the derivation of the input gradient is rather lengthy and error-prone, the implementation relies on the helper function
+
+`compute_bn_gradients`
+
+to compute the gradient with respect to the input tensor.
+
+#### Convolutional Batch Normalization
+
+For CNNs, the input tensor typically has the shape (B, C, H, W), where B denotes the batch size, C the number of channels, and H and W the spatial dimensions of the feature map.
+
+BN computes the mean and variance independently for each channel. Therefore, the four-dimensional input tensor is first reformatted into a two-dimensional matrix, allowing the same Batch Normalization implementation used for fully connected layers to be reused. After normalization, the matrix is transformed back to its original four-dimensional representation.
+
+Specifically, a tensor of shape $B \times H \times M \times N$ is first reshaped into $B \times H \times (M \cdot N))$, then transposed to obtain $B \times (M \cdot N) \times H)$, and finally reshaped into $(B \cdot M \cdot N) \times H$.
+
+In this representation, each column corresponds to a single channel, while each row corresponds to a spatial location from a sample in the mini-batch. Consequently, the standard Batch Normalization implementation can be directly applied by computing the mean and variance independently for each channel.
 
 ### Dropout
 
@@ -454,9 +591,9 @@ L1 正则化通过权重绝对值之和施加惩罚，使部分参数在优化�
 
 其中，$\gamma$ 为缩放参数（scale），$\beta$ 为平移参数(shift)，其作用与全连接层中的偏置项(bias)类似。
 
-#### 测试时长
+#### 测试时间
 
-在测试阶段同样需要进行标准化。然而，直接利用整个训练集计算真实均值和方差代价较高，因此通常采用**指数移动平均(Exponential Moving Average, EMA)**来估计全局统计量：
+在训练集中同样需要进行标准化。然而，直接利用整个训练集计算真实均值和方差代价较高，因此通常采用**指数移动平均(Exponential Moving Average, EMA)**来估计全局统计量：
 
 ```math
 \tilde{\mu}^{(k)}
@@ -548,17 +685,13 @@ $$
 
 其中，$\odot$ 表示逐元素乘， 由于输入梯度的推导过程较为繁琐，在具体实现中调用辅助函数 `compute_bn_gradients` 来完成 BN 的梯度计算。
 
-#### 卷及神经网络中的批量标准化(Convolutional Batch Normalization)
+#### 卷积神经网络中的批量标准化(Convolutional Batch Normalization)
 
-对于CNNs，BN 需要对每个通道（channel）分别计算均值和方差。关键观察在于，空间维度 $M$ 和 $N$ 中的所有位置共享同一组统计量，因此空间维度可以与批次维度 (B) 一同参与统计计算，从而复用全连接层 Batch Normalization 的实现。
+对于CNNs，输入张量通常具有该形式：(B,C,H,W) 。其中：B：Batch Size；C：Channel 数；H：图像高度；W：图像宽度。
+BN 需要对每个通道分别计算均值和方差。因此，在实现中首先将四维张量重新转化为二维矩阵(四维变二维)，然后可以直接使用 BN 代码。 完成标准化之后，再将矩阵恢复到和输入张量一样的维度(二维变四维)。
 
-具体步骤如下：
+具体实现如下，将形状为 $B \times H \times M \times N$ 的张量重塑为 $B \times H \times (M \cdot N))$ ，然后对张量进行转置，得到 $B \times (M \cdot N) \times H)$，再次重塑为 $(B \cdot M \cdot N) \times H$，在该表示下，每个通道对应一列数据，可直接应用已有的 BN 实现。
 
-将形状为 (B \times H \times M \times N) 的张量重塑为 (B \times H \times (M \cdot N))；
-对张量进行转置，得到 (B \times (M \cdot N) \times H)；
-再次重塑为 ((B \cdot M \cdot N) \times H)；
-在该表示下，每个通道对应一列数据，可直接应用已有的 Batch Normalization 实现；
-在反向传播阶段，按照相反顺序恢复张量原始形状。
 
 ### Dropout
 
