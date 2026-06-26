@@ -682,7 +682,7 @@ $$
 \end{aligned}
 ```
 
-其中，$\odot$ 表示逐元素乘， 由于输入梯度的推导过程较为繁琐，在具体实现中调用辅助函数 `compute_bn_gradients` 来完成 BN 的梯度计算。
+其中，&odot; 表示逐元素乘， 由于输入梯度的推导过程较为繁琐，在具体实现中调用辅助函数 `compute_bn_gradients` 来完成 BN 的梯度计算。
 
 #### 卷积神经网络中的批量标准化(Convolutional Batch Normalization)
 
