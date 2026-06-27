@@ -497,6 +497,8 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 ## Recurrent Neural Network(RNN)
 
+## LeNet
+
 # 从零开始搭建神经网络
 
 这是一个完全使用 Python 和 NumPy 的模块化深度学习框架。
@@ -894,5 +896,11 @@ $$
 重要的是，在前向传播中，需要记录所选取最大值的位置，位置在反向传播中需要使用。
 
 #### 反向传播
+
+## LeNet框架结构
+
+我们已学习了包含构建CNNs的所有核心层。然而，并非所有架构都能通过训练达到高性能，因此，优秀的架构设计同样至关重要。在本教程中，介绍一种名为 LeNet 的著名架构的变体。
+
+🔗 **Source Code:** [Pooling.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Models/Pooling/LeNet.py)
 
 ## 循环神经网络（RNN）
