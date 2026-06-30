@@ -495,9 +495,35 @@ The implementation then proceeds as follows: Compute the bias gradient using the
 
 #### Backward pass
 
-## Recurrent Neural Network(RNN)
+## LeNet Architecture
 
-## LeNet
+🔗 **Source Code:** [LeNet.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Models/Pooling/LeNet.py)
+
+At this point, we have implemented all of the fundamental building blocks required to construct CNNs. However, having individual components alone is not enough to build an effective deep learning model—a well-designed network architecture is also important.
+
+To demonstrate the practical usage of the framework, this project implements a modified version of the classic **LeNet-5** architecture. While preserving the original network design, several improvements commonly adopted in deep learning have been considered:
+
+- **ReLU** is used as the activation function instead of Sigmoid/Tanh.
+- **SoftMax** is used as the final classifier for multi-class classification.
+- **Adam** is employed as the optimizer for efficient parameter updates.
+- **L2 Regularization** is applied to reduce overfitting.
+- The entire network can be **saved and restored using Python Pickle**, making model persistence straightforward.
+
+Most importantly, the entire network is built **completely from scratch** using only the modules implemented throughout this project. No external deep learning frameworks such as **PyTorch** or **TensorFlow** are used.
+
+By reaching this stage, you are encouraged to assemble your own LeNet implementation inside the `Models` directory using the layers developed in the previous chapters. Reconstructing this classic CNN architecture is an excellent way to verify the correctness of the framework while gaining a deeper understanding of how data flows through different layers and how a complete neural network is built.
+
+The figure below illustrates the overall architecture of LeNet. The diagram is adapted from my **Deep Learning** course.
+
+<p align="center">
+  <img src="images/LeNet.png" width="800"/>
+</p>
+
+<p align="center">
+  <em>LeNet Architecture</em>
+</p>
+
+## Recurrent Neural Network(RNN)
 
 # 从零开始搭建神经网络
 
@@ -899,8 +925,26 @@ $$
 
 ## LeNet框架结构
 
-我们已学习了包含构建CNNs的所有核心层。然而，并非所有架构都能通过训练达到高性能，因此，优秀的架构设计同样至关重要。在本教程中，介绍一种名为 LeNet 的著名架构的变体。
-
 🔗 **Source Code:** [Pooling.py](https://github.com/ruoqizhang0/Neural_Network_Framework_From_Scratch/tree/main/Models/Pooling/LeNet.py)
+
+到目前为止，我们已经实现了构建卷积神经网络（CNN）所需的所有基础模块。然而，仅仅拥有这些组件并不足以构建一个性能优秀的神经网络，合理的网络架构设计同样至关重要。
+
+为了展示整个框架的实际应用，本项目实现了经典卷积神经网络 **LeNet-5** 的一个现代化变体。相比于原始 LeNet，本实现采用了一些当前深度学习中更常见的设计，例如：
+
+- 使用 **ReLU** 作为激活函数；
+- 使用 **SoftMax** 作为最终分类器；
+- 使用 **Adam** 优化器进行参数更新；
+- 加入 **L2 Regularization** 防止模型过拟合；
+- 支持使用 **Python Pickle** 对整个网络进行保存与加载。
+
+整个网络完全由本项目实现的各个基础模块搭建而成，没有依赖任何深度学习框架(如 PyTorch 或 TensorFlow)。 阅读到这里，可以尝试利用前面已经实现的各个模块，在 `Models` 文件夹中搭建一个完整的 LeNet 网络。通过亲手完成这一经典 CNN 架构，不仅能够验证整个框架的正确性，还能够帮助理解各个网络层之间的数据流动和模型构建过程。下面展示的是 LeNet 的网络结构图，该图来源于我的 Deep Learning 课程。
+
+<p align="center">
+  <img src="images/LeNet.png" width="800" />
+</p>
+
+<p align="center">
+  <em>LeNet网络结构</em>
+</p>
 
 ## 循环神经网络（RNN）
