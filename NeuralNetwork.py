@@ -1,4 +1,6 @@
 import copy
+import os
+import pickle
 
 class NeuralNetwork:
     def __init__(self, optimizer, weights_initializer, bias_initializer):
@@ -38,7 +40,7 @@ class NeuralNetwork:
 
         for _ in range(iterations):
             loss = self.forward()
-            self.loss.append(loss)
+            self.loss.append(float(loss))
             self.backward()
 
     def test(self, x):
@@ -64,3 +66,36 @@ class NeuralNetwork:
 
         for layer in self.layers:
             layer.testing_phase = value
+
+    def __getstate__(self):
+        state = self.__dict__.copy()
+
+        # remove data layer because generator cannot be pickled
+        if "data_layer" in state:
+            state["data_layer"] = None
+
+        return state
+
+    def __setstate__(self, state):
+        self.__dict__.update(state)
+
+        # initialize removed objects
+        self.data_layer = None
+
+    import pickle
+    @staticmethod
+    def save(filename, net):
+        os.makedirs(os.path.dirname(filename), exist_ok=True)
+        with open(filename, "wb") as f:
+            pickle.dump(net, f)
+
+    @staticmethod
+    def load(filename, data_layer):
+
+        with open(filename, "rb") as f:
+            net = pickle.load(f)
+
+        # restore data layer
+        net.data_layer = data_layer
+
+        return net
