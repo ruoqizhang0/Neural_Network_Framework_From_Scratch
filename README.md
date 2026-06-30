@@ -37,6 +37,7 @@
     - [Pooling Layer](#pooling-layer)
       - [Forward pass](#forward-pass-2)
       - [Backward pass](#backward-pass-2)
+  - [LeNet Architecture](#lenet-architecture)
   - [Recurrent Neural Network(RNN)](#recurrent-neural-networkrnn)
 - [从零开始搭建神经网络](#%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B%E6%90%AD%E5%BB%BA%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C)
   - [基础](#%E5%9F%BA%E7%A1%80)
@@ -72,6 +73,7 @@
     - [池化层（Pooling Layer）](#%E6%B1%A0%E5%8C%96%E5%B1%82pooling-layer)
       - [前向传播](#%E5%89%8D%E5%90%91%E4%BC%A0%E6%92%AD-1)
       - [反向传播](#%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD-2)
+  - [LeNet框架结构](#lenet%E6%A1%86%E6%9E%B6%E7%BB%93%E6%9E%84)
   - [循环神经网络（RNN）](#%E5%BE%AA%E7%8E%AF%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9Crnn)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
