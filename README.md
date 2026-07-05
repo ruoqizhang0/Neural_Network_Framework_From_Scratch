@@ -549,8 +549,6 @@ The figure below illustrates the overall architecture of LeNet. The diagram is a
 
 ## 正则化
 
-一言以蔽之，正则化的目的是为了减少过拟合。
-
 ### 数据增强
 
 * 随机空间变换
