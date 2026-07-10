@@ -9,6 +9,7 @@ class FullyConnected(Base.BaseLayer):
         self.trainable = True
         self.weights = np.random.rand(input_size + 1, output_size)
         self._optimizer = None
+        self.regularizer = None
 
     def forward(self, X):
         batch_size = X.shape[0]
@@ -23,10 +24,20 @@ class FullyConnected(Base.BaseLayer):
         dy_dw = self.X_bias
         self.dL_dx = np.dot(dL_dy, dy_dx.T)
         self.dL_dW = np.dot(dy_dw.T, dL_dy)
+
+        if self.regularizer is not None:
+            self.dL_dW += self.regularizer.calculate_gradient(self.weights)
         if self._optimizer is not None:
             self.weights = self._optimizer.calculate_update(self.weights, self.dL_dW)
 
         return self.dL_dx
+
+    def calculate_regularization_loss(self):
+
+        if self.regularizer is None:
+            return 0
+
+        return self.regularizer.norm(self.weights)
 
     @property
     def optimizer(self):
@@ -35,6 +46,7 @@ class FullyConnected(Base.BaseLayer):
     @optimizer.setter
     def optimizer(self, optimizer):
         self._optimizer = optimizer
+        self.regularizer = optimizer.regularizer
 
     @property
     def gradient_weights(self):

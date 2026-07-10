@@ -8,7 +8,7 @@ class Dropout(Base.BaseLayer):
         self.trainable = False
 
     def forward(self, X):
-        if self.testing_phase:
+        if self.testing_phase: # discard no neurons during testing
             return X
         self.mask = np.random.rand(*X.shape) < self.probability
         return X * self.mask / self.probability
