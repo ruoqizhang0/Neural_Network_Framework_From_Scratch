@@ -515,7 +515,7 @@ Most importantly, the entire network is built **completely from scratch** using 
 
 By reaching this stage, you are encouraged to assemble your own LeNet implementation inside the `Models` directory using the layers developed in the previous chapters. Reconstructing this classic CNN architecture is an excellent way to verify the correctness of the framework while gaining a deeper understanding of how data flows through different layers and how a complete neural network is built.
 
-The figure below illustrates the overall architecture of LeNet. The diagram is adapted from my **Deep Learning** course.
+The figure below illustrates the overall architecture of LeNet.
 
 <p align="center">
   <img src="images/LeNet.png" width="800"/>
@@ -526,6 +526,10 @@ The figure below illustrates the overall architecture of LeNet. The diagram is a
 </p>
 
 ## Recurrent Neural Network(RNN)
+
+### Forward pass
+
+### Backward pass
 
 # 从零开始搭建神经网络
 
